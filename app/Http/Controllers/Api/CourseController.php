@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUpdateCourse;
 use App\Http\Resources\CourseResource;
 use App\Services\CourseService;
 use Illuminate\Http\Request;
@@ -35,20 +36,24 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUpdateCourse $request)
     {
-        //
+        $course = $this->courseService->createNewCourse($request->validated());
+
+        return new CourseResource($course);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $identify
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($identify)
     {
-        //
+        $course = $this->courseService->getCourse($identify);
+        
+        return new CourseResource($course);
     }
 
     /**
@@ -69,8 +74,10 @@ class CourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($identify)
     {
-        //
+        $this->courseService->deleteCourse($identify);
+        
+        return response()->json([], 204);
     }
 }
